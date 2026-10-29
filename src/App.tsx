@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { readingTracks } from './data/book-audio'
 import { week1Days } from './data/week1'
 import type { Day } from './data/types'
+import { Card, Origin } from './components/ui'
 
 const WEEKS = [
   { id: 'w1', n: 1, theme: { sv: 'Bostad', fa: 'مسکن', en: 'Housing' }, grammar: { sv: 'Indefinita pronomen', fa: 'ضمایر نامعین', en: 'Indefinite pronouns' }, page: 8, days: week1Days },
@@ -31,7 +32,7 @@ export default function App() {
     <div style={{ minHeight: '100vh', background: '#0f1419', color: '#e7e9ea', fontFamily: 'system-ui' }}>
       <header style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #2f3336', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <strong style={{ fontSize: 18 }}>Varje dag</strong>
-        <span style={{ opacity: 0.5, fontSize: 13 }}>SFI D · دقیقاً مثل فایل زیپ</span>
+        <span style={{ opacity: 0.5, fontSize: 13 }}>SFI D</span>
       </header>
 
       <main style={{ padding: '1.25rem', maxWidth: 920, margin: '0 auto' }}>
@@ -91,10 +92,13 @@ export default function App() {
           ))}
         </div>
 
-        <div style={{ background: '#1a1f26', borderRadius: 16, padding: '1.25rem' }}>
-          <p style={{ margin: '0 0 0.4rem', opacity: 0.55, fontSize: 13 }}>
-            هفته {week.n} · {DAYS.find(d => d.id === dayId)?.sv} · صفحه {week.page} · {week.grammar.sv}
-          </p>
+        <Card>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <Origin kind="book" label="از کتاب" />
+            <span style={{ opacity: 0.55, fontSize: 13 }}>
+              هفته {week.n} · {DAYS.find(d => d.id === dayId)?.sv} · صفحه {week.page} · {week.grammar.sv}
+            </span>
+          </div>
           <h2 style={{ margin: '0 0 1rem', fontSize: 22 }}>{reading && 'title' in reading ? reading.title : week.theme.sv}</h2>
 
           {mode === 'book' && (
@@ -137,10 +141,10 @@ export default function App() {
               <p style={{ opacity: 0.6, fontSize: 14, marginTop: '0.75rem' }}>سؤال‌ها از فایل زیپ در نسخه کامل اضافه می‌شود.</p>
             </div>
           )}
-        </div>
+        </Card>
 
         <p style={{ marginTop: '1.5rem', fontSize: 12, opacity: 0.45 }}>
-          ساختار دقیقاً مثل فایل زیپ: هفته → روز → حالت (book / learn / test). داده‌ها از src/data/week1.ts و src/data/book-audio.ts می‌آیند.
+          ساختار مثل فایل زیپ: هفته → روز → حالت (book / learn / test). کامپوننت‌ها از src/components/ui.tsx می‌آیند.
         </p>
       </main>
     </div>

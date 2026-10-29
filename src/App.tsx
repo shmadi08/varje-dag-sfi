@@ -22,11 +22,14 @@ export default function App() {
   const [weekId, setWeekId] = useState('w1')
   const [dayId, setDayId] = useState<Day['id']>('mon')
   const [mode, setMode] = useState<'book' | 'learn' | 'test'>('book')
+  const [showAnswers, setShowAnswers] = useState<Record<string, boolean>>({})
 
   const week = WEEKS.find(w => w.id === weekId)!
   const day = week.days.find(d => d.id === dayId)
   const tracks = readingTracks(week.n, dayId)
   const reading = day?.blocks.find(b => b.type === 'reading')
+  const questions = day?.blocks.filter(b => b.type === 'questions') ?? []
+  const vocab = day?.blocks.filter(b => b.type === 'vocab') ?? []
 
   return (
     <div style={{ minHeight: '100vh', background: '#0f1419', color: '#e7e9ea', fontFamily: 'system-ui' }}>
@@ -129,22 +132,48 @@ export default function App() {
             <div>
               <p style={{ marginBottom: '0.75rem' }}>واژه‌ها و گرامر هفته {week.n}</p>
               <p style={{ opacity: 0.7 }}>گرامر: {week.grammar.fa} ({week.grammar.sv})</p>
-              {day?.blocks.filter(b => b.type === 'vocab').map(b => (
-                <p key={b.id} style={{ marginTop: '0.75rem', opacity: 0.6 }}>واژه‌ها: {b.type === 'vocab' ? b.wordIds.join(', ') : ''}</p>
+              {vocab.map(b => (
+                <div key={b.id} style={{ marginTop: '1rem' }}>
+                  <p style={{ fontWeight: 600, marginBottom: '0.4rem' }}>واژه‌ها</p>
+                  <p style={{ opacity: 0.8 }}>{b.type === 'vocab' ? b.wordIds.join(' · ') : ''}</p>
+                </div>
               ))}
+              {vocab.length === 0 && <p style={{ opacity: 0.5, marginTop: '0.75rem' }}>واژه‌ای برای این روز وجود ندارد.</p>}
             </div>
           )}
 
           {mode === 'test' && (
             <div>
-              <p>سؤال‌ها و تست‌های هفته {week.n} · {DAYS.find(d => d.id === dayId)?.fa}</p>
-              <p style={{ opacity: 0.6, fontSize: 14, marginTop: '0.75rem' }}>سؤال‌ها از فایل زیپ در نسخه کامل اضافه می‌شود.</p>
+              {questions.length === 0 && <p style={{ opacity: 0.5 }}>سؤالی برای این روز وجود ندارد.</p>}
+              {questions.map(b => (
+                <div key={b.id} style={{ marginBottom: '1.5rem' }}>
+                  <h3 style={{ margin: '0 0 0.75rem', fontSize: 16 }}>{b.type === 'questions' ? b.title : ''}</h3>
+                  {b.type === 'questions' && b.items.map((item, i) => (
+                    <div key={i} style={{ marginBottom: '1rem', padding: '0.75rem', background: '#0f1419', borderRadius: 8 }}>
+                      <p style={{ margin: '0 0 0.4rem', fontWeight: 600 }}>{item.q}</p>
+                      {item.fa && <p style={{ margin: '0 0 0.5rem', opacity: 0.6, fontSize: 14 }}>{item.fa}</p>}
+                      <button
+                        onClick={() => setShowAnswers(s => ({ ...s, [`${b.id}-${i}`]: !s[`${b.id}-${i}`] }))}
+                        style={{ fontSize: 13, padding: '0.3rem 0.6rem', borderRadius: 6, border: '1px solid #2f3336', background: 'transparent', color: 'inherit' }}
+                      >
+                        {showAnswers[`${b.id}-${i}`] ? 'پنهان کردن پاسخ' : 'نشان دادن پاسخ'}
+                      </button>
+                      {showAnswers[`${b.id}-${i}`] && item.model && (
+                        <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: '#1d9bf011', borderRadius: 6 }}>
+                          <p style={{ margin: 0, fontSize: 14 }}>{item.model}</p>
+                          {item.modelFa && <p style={{ margin: '0.3rem 0 0', opacity: 0.6, fontSize: 13 }}>{item.modelFa}</p>}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           )}
         </Card>
 
         <p style={{ marginTop: '1.5rem', fontSize: 12, opacity: 0.45 }}>
-          ساختار مثل فایل زیپ: هفته → روز → حالت (book / learn / test). کامپوننت‌ها از src/components/ui.tsx می‌آیند.
+          محتوای هفته 1 از فایل زیپ اضافه شد. صوت‌ها از media.svenskadagfordag.se می‌آیند.
         </p>
       </main>
     </div>

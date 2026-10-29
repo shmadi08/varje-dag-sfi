@@ -1,19 +1,5 @@
 import { useState } from 'react'
-
-// Exact audio from original book-audio.ts
-const AUDIO: Record<number, { url: string; label: string }[]> = {
-  1: [
-    { url: 'https://media.svenskadagfordag.se/2018/06/01Det_behovs_fler_bostad_s8.mp3', label: 'Det behövs fler bostäder s. 8' },
-    { url: 'https://media.svenskadagfordag.se/2018/06/02Jag_fyllde_30_ar_s8.mp3', label: 'Jag fyllde 30 år … s. 8' },
-    { url: 'https://media.svenskadagfordag.se/2018/06/03Hur_bor_jag_s12.mp3', label: 'Hur bor jag? s. 12' },
-    { url: 'https://media.svenskadagfordag.se/2018/06/04Mitt_namn_ar_Alex_s13.mp3', label: 'Mitt namn är Alex … s. 13' },
-    { url: 'https://media.svenskadagfordag.se/2018/06/05Birgitta_och_Bertil_har_s13.mp3', label: 'Birgitta och Bertil har varit gifta … s. 13' },
-  ],
-  2: [
-    { url: 'https://media.svenskadagfordag.se/2018/06/09Var_halsa_ar_vart_eget_s30.mp3', label: 'Vår hälsa är vårt eget ansvar s. 30' },
-    { url: 'https://media.svenskadagfordag.se/2018/06/10Manniskan_behover_rora_s30.mp3', label: 'Människan behöver röra på sig … s. 30' },
-  ],
-}
+import { readingTracks } from './data/book-audio'
 
 const WEEKS = [
   { n: 1, theme: 'مسکن', sv: 'Bostad', grammar: 'Indefinita pronomen', page: 8 },
@@ -28,7 +14,7 @@ De flesta är nog överens om att det råder bostadsbrist i Sveriges storstäder
 export default function App() {
   const [week, setWeek] = useState(1)
   const [mode, setMode] = useState<'book' | 'learn' | 'test'>('book')
-  const tracks = AUDIO[week] ?? AUDIO[1]
+  const tracks = readingTracks(week, 'mon')
 
   return (
     <div style={{ minHeight: '100vh', background: '#0f1419', color: '#e7e9ea' }}>
@@ -105,7 +91,7 @@ export default function App() {
         </div>
 
         <p style={{ marginTop: '2rem', fontSize: 13, opacity: 0.5 }}>
-          صوت‌ها دقیقاً از فایل زیپ (book-audio.ts) آمده‌اند. ساختار هفته → روز → درس و حالت‌های book/learn/test مثل اصل است.
+          صوت‌ها دقیقاً از فایل زیپ (src/data/book-audio.ts) آمده‌اند. ساختار هفته → روز → درس و حالت‌های book/learn/test مثل اصل است.
         </p>
       </main>
     </div>
